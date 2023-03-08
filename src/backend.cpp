@@ -45,6 +45,24 @@ void Backend::Optimize(Map::KeyframesType &keyframes,
     optimizer.setAlgorithm(solver);
 
     std::map<unsigned long, VertexPose *> vertices;
+    unsigned long max_kf_id = 0;
+    for (auto &keyframe : keyframes){
+        auto kf = keyframe.second;
+        VertexPose *vertex_pose = new VertexPose();
+        vertex_pose->setId(kf->keyframe_id_);
+        vertex_pose->setEstimate(kf->Pose());
+        optimizer.addVertex(vertex_pose);
+        if (kf->keyframe_id_ > max_kf_id) {
+            max_kf_id = kf->keyframe_id_;
+        }
+
+        vertices.insert({kf->keyframe_id_, vertex_pose});
+    }
+    
+    std::map<unsigned long, VertexXYZ *> vertices_landmarks;
+
+    Mat33 K = camera_left_->K();
+    SE3 left_ext  = camera_left_->pose();
     
 
 }
